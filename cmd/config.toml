@@ -1,0 +1,7 @@
+[network]
+port = ":8080"
+
+[file]
+extension = ["pdf", "doc"]
+
+
