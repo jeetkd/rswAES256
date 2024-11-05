@@ -24,6 +24,11 @@ func DecryptAES(ciphertext, key []byte) ([]byte, error) {
 	// 실제 암호문
 	ciphertext = ciphertext[aes.BlockSize:]
 
+	// CBC 모드는 항상 전체 블록 단위로 작동합니다
+	if len(ciphertext)%aes.BlockSize != 0 {
+		return nil, errors.New("암호문이 블록 크기의 배수가 아닙니다")
+	}
+
 	// 복호화된 데이터를 저장할 버퍼
 	plaintext := make([]byte, len(ciphertext))
 
