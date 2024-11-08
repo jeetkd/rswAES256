@@ -8,6 +8,7 @@ import (
 type Config struct {
 	Network struct {
 		Port string
+		Uri  string
 	}
 
 	File struct {
