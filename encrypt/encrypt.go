@@ -1,6 +1,7 @@
 package encrypt
 
 import (
+	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
@@ -10,8 +11,10 @@ import (
 
 // EncryptAES 는 data를 AES와 CBC 블록 모드로 암호화
 func EncryptAES(data, key []byte) ([]byte, error) {
+	var padData []byte
+
 	if len(string(data))%aes.BlockSize != 0 {
-		panic("plaintext is not a multiple of the block size")
+		padData = PKCS7Padding(data, aes.BlockSize)
 	}
 
 	// 키에 대한 블록 생성
@@ -21,7 +24,7 @@ func EncryptAES(data, key []byte) ([]byte, error) {
 	}
 
 	// 암호문을 저장할 공간
-	ciphertext := make([]byte, aes.BlockSize+len(data))
+	ciphertext := make([]byte, aes.BlockSize+len(padData))
 	// IV 초기화 벡터를 저장할 공간
 	iv := ciphertext[:aes.BlockSize]
 	// iv := []byte("abcdefghijklmnop")
@@ -35,7 +38,7 @@ func EncryptAES(data, key []byte) ([]byte, error) {
 	mode := cipher.NewCBCEncrypter(block, iv)
 
 	// 블록 암호화 수행
-	mode.CryptBlocks(ciphertext[aes.BlockSize:], data)
+	mode.CryptBlocks(ciphertext[aes.BlockSize:], padData)
 
 	return ciphertext, nil
 
@@ -62,5 +65,16 @@ func EncryptFile(filename string, key []byte) error {
 	}
 
 	return nil
+}
 
+// PKCS7Padding 는 PKCS#7 패딩 함수(CBC방식에 필요한)
+func PKCS7Padding(data []byte, blockSize int) []byte {
+	padding := blockSize - len(data)%blockSize
+
+	if padding == 0 {
+		padding = blockSize
+	}
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+
+	return append(data, padtext...)
 }
