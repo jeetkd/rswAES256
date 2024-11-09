@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"io"
+	"os"
 )
 
 // EncryptAES 는 data를 AES와 CBC 블록 모드로 암호화
@@ -37,5 +38,29 @@ func EncryptAES(data, key []byte) ([]byte, error) {
 	mode.CryptBlocks(ciphertext[aes.BlockSize:], data)
 
 	return ciphertext, nil
+
+}
+
+// EncryptFile 는 파일을 암호화 시킵니다
+func EncryptFile(filename string, key []byte) error {
+	// 파일 읽기
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	// 파일 암호화
+	encryptedData, err := EncryptAES(data, key)
+	if err != nil {
+		return err
+	}
+
+	// 암호화된 데이터로 파일 덮어쓰기
+	err = os.WriteFile(filename, encryptedData, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 
 }

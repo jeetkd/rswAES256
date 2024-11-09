@@ -38,6 +38,12 @@ func main() {
 	}
 	fmt.Printf("cipherText : %x\n", cipherText)
 
+	// 파일 암호화
+	err = encrypt.EncryptFile("test.txt", []byte(*key))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	//AES 복호화
 	plainText, err := decrypt.DecryptAES(cipherText, []byte(*key))
 	if err != nil {
