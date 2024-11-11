@@ -11,10 +11,9 @@ import (
 
 // EncryptAES 는 data를 AES와 CBC 블록 모드로 암호화
 func EncryptAES(data, key []byte) ([]byte, error) {
-	var padData []byte
-
 	if len(string(data))%aes.BlockSize != 0 {
-		padData = PKCS7Padding(data, aes.BlockSize)
+		data = PKCS7Padding(data, aes.BlockSize)
+
 	}
 
 	// 키에 대한 블록 생성
@@ -24,10 +23,9 @@ func EncryptAES(data, key []byte) ([]byte, error) {
 	}
 
 	// 암호문을 저장할 공간
-	ciphertext := make([]byte, aes.BlockSize+len(padData))
+	ciphertext := make([]byte, aes.BlockSize+len(data))
 	// IV 초기화 벡터를 저장할 공간
 	iv := ciphertext[:aes.BlockSize]
-	// iv := []byte("abcdefghijklmnop")
 
 	//iv에 랜덤값 설정
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
@@ -38,10 +36,9 @@ func EncryptAES(data, key []byte) ([]byte, error) {
 	mode := cipher.NewCBCEncrypter(block, iv)
 
 	// 블록 암호화 수행
-	mode.CryptBlocks(ciphertext[aes.BlockSize:], padData)
+	mode.CryptBlocks(ciphertext[aes.BlockSize:], data)
 
 	return ciphertext, nil
-
 }
 
 // EncryptFile 는 파일을 암호화 시킵니다
