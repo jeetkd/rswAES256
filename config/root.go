@@ -12,7 +12,7 @@ type Config struct {
 	}
 
 	File struct {
-		Extension []string
+		Extensions []string
 	}
 }
 
