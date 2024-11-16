@@ -42,7 +42,7 @@ func EncryptAES(data, key []byte) ([]byte, error) {
 }
 
 // EncryptFile 는 파일을 암호화 시킵니다
-func EncryptFile(filename string, key []byte) error {
+func EncryptFile(filename, newExt string, key []byte) error {
 	// 파일 읽기
 	data, err := os.ReadFile(filename)
 	if err != nil {
@@ -54,7 +54,7 @@ func EncryptFile(filename string, key []byte) error {
 	if err != nil {
 		return err
 	}
-
+	// todo 파일 확장자 변경.
 	// 암호화된 데이터로 파일 덮어쓰기
 	err = os.WriteFile(filename, encryptedData, 0644)
 	if err != nil {
