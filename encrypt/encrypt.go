@@ -28,7 +28,7 @@ func EncryptAES(data, key []byte) ([]byte, error) {
 	iv := ciphertext[:aes.BlockSize]
 
 	//iv에 랜덤값 설정
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+	if _, err = io.ReadFull(rand.Reader, iv); err != nil {
 		return nil, err
 	}
 
