@@ -92,19 +92,16 @@ func (c *Client) ChangeFileExtension(filePath string) error {
 	dir := filepath.Dir(filePath)
 	// 파일 이름 분리
 	fileName := filepath.Base(filePath)
-	//확장자 분리
-	fileNameWithoutExt := strings.TrimSuffix(fileName, filepath.Ext(fileName))
-	newFileName := fileNameWithoutExt
 
 	// "." 체크
 	if !strings.HasPrefix(c.config.Extensions.NewExt, ".") {
-		newFileName += "."
+		fileName += "."
 	}
 	// 파일 이름에 새로운 확장자 추가
-	newFileName += c.config.Extensions.NewExt
+	fileName += c.config.Extensions.NewExt
 
 	// 새로운 전체 경로 생성.
-	newPath := filepath.Join(dir, newFileName)
+	newPath := filepath.Join(dir, fileName)
 
 	// 새로운 확장자로 파일 이름을 변경.
 	err := os.Rename(filePath, newPath)
