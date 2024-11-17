@@ -6,6 +6,7 @@ import (
 	"log"
 	"rswAES256/client"
 	"rswAES256/config"
+	"time"
 )
 
 var path = "./config.toml"
@@ -30,8 +31,15 @@ func main() {
 	}
 	fmt.Println("Key from server : ", *key)
 
-	// roothPath의 하위 파일들을 암호화 함.
+	// rootPath의 하위 파일들을 암호화 함.
 	err = newClient.AESEncryptDirectory("./test/")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	time.Sleep(time.Second * 5)
+	// rootPath의 하위 파일들을 복호화(확장자가.jkd으로 암호화된것만 복호화)
+	err = newClient.AESDecryptDirectory("./test/")
 	if err != nil {
 		log.Fatalln(err)
 	}
