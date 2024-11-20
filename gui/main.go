@@ -7,6 +7,8 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
+	"rswAES256/client"
+	"rswAES256/config"
 )
 
 func main() {
@@ -39,14 +41,21 @@ func main() {
 
 			// 재확인 정보 메시지 생성.
 			confirm := dialog.NewConfirm("확인", "검증되지 않은 키를 입력 시 파일을 되돌릴 수 없습니다. 정말 진행하시겠습니까?", func(ok bool) {
+				//사용자가 '예'를 선택한 경우
 				if ok {
-					//사용자가 '예'를 선택한 경우
-					fmt.Println("예")
 
-					//todo 파일 복호화 진행. decrypt.go
-					// 1.newClient 생성.
-					// 2. newClient.AESDecryptDirectory("./test/") 실행.
+					// 설정파일 설정.
+					c := config.NewConfig("./../cmd/config.toml")
+					fmt.Println(c)
 
+					// 입력한 키를 client에 넣어줌.
+					newClient := client.NewClient(c)
+					newClient.Key = key
+
+					//복호화 진행
+					if err := newClient.AESDecryptDirectory("./../cmd/test"); err != nil {
+						dialog.ShowError(err, w)
+					}
 					// 입력창 비우기
 					input.SetText("")
 				}
