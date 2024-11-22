@@ -11,6 +11,10 @@ import (
 	"rswAES256/config"
 )
 
+// 1. if you want to run this gui(fyne) in windows OS. you have to compile C language compiler.
+// 2. you can run this gui(fyne) in Mac OS and linux.
+// 3. if you want to run gui display in windows without C compiler. think about Gio Ui is Cross-Platform GUI for Go
+
 func main() {
 	a := app.New()
 	w := a.NewWindow("ransomware")
