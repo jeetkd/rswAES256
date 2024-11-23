@@ -13,7 +13,6 @@ import (
 func EncryptAES(data, key []byte) ([]byte, error) {
 	if len(string(data))%aes.BlockSize != 0 {
 		data = PKCS7Padding(data, aes.BlockSize)
-
 	}
 
 	// 키에 대한 블록 생성

@@ -1,7 +1,7 @@
-package test2
+package main
 
 import "fmt"
 
 func main() {
-	fmt.Println("this is a test")
+	fmt.Println("its for test.")
 }

