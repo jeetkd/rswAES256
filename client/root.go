@@ -1,10 +1,13 @@
 package client
 
-import "rswAES256/config"
+import (
+	"crypto/rsa"
+	"rswAES256/config"
+)
 
 type Client struct {
 	config    *config.Config
-	PublicKey string `json:"key"`
+	PublicKey *rsa.PublicKey
 	Key       string
 }
 
