@@ -12,7 +12,7 @@ import (
 )
 
 var path = "./config.toml"
-var filePath = "." + string(filepath.Separator) + filepath.Join("test") // OS 독립적 파일 경로
+var filePath = "." + string(filepath.Separator) + filepath.Join("test") // OS 독립적 파일 경로(.\test)
 var pathFlag = flag.String("config", path, "set toml path")
 
 func main() {
