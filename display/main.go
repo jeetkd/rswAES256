@@ -23,7 +23,7 @@ func main() {
 		} else {
 
 			// 설정파일 설정.
-			c := config.NewConfig("./../cmd/config.toml")
+			c := config.NewConfig("./config.toml")
 			fmt.Println(c)
 
 			// 입력한 키를 client에 넣어줌.
