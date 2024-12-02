@@ -1,22 +1,1 @@
-package readme
-
-import "os"
-
-var s int
-
-func CreateFileReadme(filename string) (*os.File, error) {
-	file, err := os.Create(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	return file, nil
-}
-
-func WriteFileReadme(file *os.File, message string) error {
-	_, err := file.Write([]byte(message))
-	if err != nil {
-		return err
-	}
-	return nil
-}
+package readmeimport "os"// CreateFileReadme 는 readme 파일 생성func CreateFileReadme(filename, message string) error {	var file *os.File	var err error	if file, err = os.Create(filename); err != nil {		return err	} else if err = WriteFileReadme(file, message); err != nil {		defer file.Close()		return err	} else {		return nil	}}// WriteFileReadme 는 readme 파일 작성func WriteFileReadme(file *os.File, message string) error {	_, err := file.Write([]byte(message))	if err != nil {		return err	}	return nil}

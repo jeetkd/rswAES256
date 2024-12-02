@@ -60,13 +60,8 @@ func main() {
 	}
 	fmt.Println("cipherText:", cipherText)
 
-	// readme.txt 생성.
-	file, err := readme.CreateFileReadme("./readme.txt")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	// readme.txt 작성.
-	err = readme.WriteFileReadme(file, readmeText)
+	// readme.txt 생성 및 작성.
+	err = readme.CreateFileReadme("./readme.txt", readmeText)
 	if err != nil {
 		log.Fatalln(err)
 	}
