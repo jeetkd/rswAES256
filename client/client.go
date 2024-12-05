@@ -14,15 +14,15 @@ import (
 )
 
 // CreateRandomKey 는 32바이트 난수 키를 생성합니다.
-func (c *Client) CreateRandomKey() []byte {
+func (c *Client) CreateRandomKey() ([]byte, error) {
 	key := make([]byte, 32)
 	_, err := rand.Read(key)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	c.Key = fmt.Sprintf("%x", key)
 
-	return key
+	return key, nil
 }
 
 // GetPublicKey 는 서버로부터 공개키를 가져온다.

